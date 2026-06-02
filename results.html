@@ -1,0 +1,626 @@
+﻿<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Нәтижелер мен Сертификаттар — IT Learning Platform</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="assignments.css">
+    <style>
+        /* ── Assignment Results Table ───────────────────────── */
+        @media (max-width: 768px) {
+            .section { padding: 20px 16px !important; }
+            .results-grid { grid-template-columns: 1fr !important; }
+            .stage-results-table th:nth-child(3),
+            .stage-results-table td:nth-child(3) { display: none; }
+            .stage-results-table { font-size: 0.82rem; }
+            .stage-results-table th,
+            .stage-results-table td { padding: 10px 8px; }
+            .certificate-card-item { flex-direction: column; gap: 12px; align-items: flex-start; }
+            .leaderboard-table th:nth-child(4),
+            .leaderboard-table td:nth-child(4) { display: none; }
+            .leaderboard-table th:nth-child(3),
+            .leaderboard-table td:nth-child(3) { display: none; }
+            .results-assignments-section { padding: 16px; }
+            .stats-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+            .mini-card { padding: 14px 10px; gap: 10px; }
+            .mini-card-num { font-size: 1.2rem; }
+        }
+        .results-assignments-section {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+            margin-top: 30px;
+        }
+
+        .course-result-block {
+            margin-bottom: 30px;
+        }
+
+        .course-result-block:last-child { margin-bottom: 0; }
+
+        .course-result-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 14px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .course-result-icon {
+            font-size: 1.4rem;
+        }
+
+        .stage-results-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .stage-results-table th {
+            text-align: left;
+            padding: 10px 14px;
+            border-bottom: 2px solid var(--border-color);
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.4px;
+        }
+
+        .stage-results-table td {
+            padding: 13px 14px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.88rem;
+            vertical-align: middle;
+        }
+
+        .stage-results-table tr:last-child td { border-bottom: none; }
+
+        .stage-results-table tr:hover td {
+            background: var(--bg-tertiary);
+        }
+
+        .stage-score-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stage-score-fill {
+            height: 7px;
+            border-radius: 10px;
+            min-width: 4px;
+            transition: width 0.6s ease;
+        }
+
+        .score-fill-good    { background: linear-gradient(90deg, #10b981, #34d399); }
+        .score-fill-partial { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+        .score-fill-bad     { background: linear-gradient(90deg, #ef4444, #f87171); }
+        .score-fill-empty   { background: var(--border-color); }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .status-pill.done    { background: rgba(16,185,129,0.12); color: #059669; }
+        .status-pill.failed  { background: rgba(239,68,68,0.12);  color: #dc2626; }
+        .status-pill.pending { background: rgba(100,116,139,0.12); color: var(--text-muted); }
+
+        .errors-cell {
+            max-width: 260px;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .errors-cell .err-item {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .goto-lesson-link {
+            color: var(--color-primary);
+            font-weight: 600;
+            font-size: 0.82rem;
+            white-space: nowrap;
+        }
+
+        .goto-lesson-link:hover { text-decoration: underline; }
+
+        /* Summary mini cards */
+        .results-summary-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .results-summary-row { grid-template-columns: repeat(2,1fr); }
+        }
+
+        @media (max-width: 480px) {
+            .results-summary-row { grid-template-columns: 1fr; }
+            .stage-results-table th:nth-child(4),
+            .stage-results-table td:nth-child(4) { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVIGATION -->
+    <header class="navbar">
+        <div class="nav-brand">
+            <div class="brand-icon">IT</div>
+            <span>Learning Platform</span>
+        </div>
+
+        <button class="hamburger" id="hamburger" aria-label="Мәзір">
+            <span></span><span></span><span></span>
+        </button>
+
+        <ul class="nav-links" id="nav-links">
+            <li><a href="index.html">Басты бет</a></li>
+            <li><a href="lessons.html">Сабақтар</a></li>
+            <li><a href="dashboard.html" id="student-cabinet-btn" style="display:none;">Жеке кабинет</a></li>
+            <li><a href="results.html" class="active">Нәтижелер</a></li>
+            <li><a href="admin.html">Мұғалім панелі</a></li>
+        </ul>
+
+        <div class="nav-actions">
+            <button class="theme-toggle-btn" id="theme-toggle" title="Тақырыпты ауыстыру"></button>
+            <button class="btn btn-secondary btn-sm" id="login-nav-btn">Кіру</button>
+        </div>
+    </header>
+
+    <!-- MAIN LAYOUT -->
+    <main class="dashboard-layout">
+        <aside class="sidebar">
+            <ul class="sidebar-menu">
+                <li><a href="dashboard.html" class="sidebar-link"><span class="sidebar-icon">📊</span> Бақылау тақтасы</a></li>
+                <li><a href="lessons.html"   class="sidebar-link"><span class="sidebar-icon">📚</span> Менің сабақтарым</a></li>
+                <li><a href="results.html"   class="sidebar-link active"><span class="sidebar-icon">🏆</span> Нәтижелер</a></li>
+            </ul>
+            <div style="margin-top:auto;padding:15px;background:var(--bg-tertiary);border-radius:var(--radius-md);font-size:0.85rem;">
+                <strong>Нәтижелер:</strong><br>Деректер нақты уақытта жаңартылады.
+            </div>
+        </aside>
+
+        <section class="dashboard-main">
+
+            <!-- Page header -->
+            <div class="dashboard-header animate-fade-in-up">
+                <div class="user-welcome">
+                    <h2>Үлгерім және Нәтижелер</h2>
+                    <p>Әр тапсырма бойынша толық статистика, сертификаттар және көшбасшылар тақтасы.</p>
+                </div>
+                <a href="lessons.html" class="btn btn-primary">Оқуды жалғастыру</a>
+            </div>
+
+            <!-- Summary mini cards -->
+            <div class="results-summary-row animate-fade-in-up">
+                <div class="mini-card">
+                    <div class="mini-card-icon" style="background:rgba(37,99,235,.1);color:var(--color-primary);">✅</div>
+                    <div class="mini-card-info">
+                        <span class="mini-card-num" id="sum-done">—</span>
+                        <span class="mini-card-label">Орындалған тапсырмалар</span>
+                    </div>
+                </div>
+                <div class="mini-card">
+                    <div class="mini-card-icon" style="background:rgba(16,185,129,.1);color:var(--color-success);">📈</div>
+                    <div class="mini-card-info">
+                        <span class="mini-card-num" id="sum-avg">—</span>
+                        <span class="mini-card-label">Орташа ұпай</span>
+                    </div>
+                </div>
+                <div class="mini-card">
+                    <div class="mini-card-icon" style="background:rgba(245,158,11,.1);color:var(--color-warning);">🔁</div>
+                    <div class="mini-card-info">
+                        <span class="mini-card-num" id="sum-attempts">—</span>
+                        <span class="mini-card-label">Барлық әрекеттер</span>
+                    </div>
+                </div>
+                <div class="mini-card">
+                    <div class="mini-card-icon" style="background:rgba(168,85,247,.1);color:#a855f7;">🏅</div>
+                    <div class="mini-card-info">
+                        <span class="mini-card-num" id="sum-rank">—</span>
+                        <span class="mini-card-label">Рейтингтегі орын</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Leaderboard + Certificates grid -->
+            <div class="results-grid animate-fade-in-up">
+
+                <!-- Certificates -->
+                <div class="certificate-section">
+                    <h3 class="panel-title">🎓 Менің Сертификаттарым</h3>
+                    <div id="certificates-container" class="certificate-list"></div>
+                </div>
+
+                <!-- Leaderboard -->
+                <div class="leaderboard-section">
+                    <div class="panel-title">
+                        <span>🏆 Көшбасшылар тақтасы</span>
+                        <span style="font-size:0.78rem;color:var(--color-primary);font-weight:700;">LIVE</span>
+                    </div>
+                    <p style="font-size:0.83rem;color:var(--text-muted);margin-top:-14px;margin-bottom:18px;">
+                        Әр орындалған кезең = 100 ұпай.
+                    </p>
+                    <div class="students-table-wrapper">
+                        <table class="leaderboard-table">
+                            <thead>
+                                <tr>
+                                    <th>Орын</th>
+                                    <th>Оқушы</th>
+                                    <th>Прогресс</th>
+                                    <th>Ұпайлар</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboard-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Detailed Assignment Results ────────────────── -->
+            <div class="results-assignments-section animate-fade-in-up">
+                <h3 class="panel-title">📋 Тапсырмалар бойынша толық нәтижелер</h3>
+                <div id="assignment-results-container">
+                    <div style="text-align:center;padding:40px;color:var(--text-muted);">
+                        Деректерді жүктеу...
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- CERTIFICATE MODAL -->
+    <div class="modal-overlay" id="cert-modal">
+        <div class="cert-preview-box">
+            <button class="modal-close" onclick="closeCertModal()">&times;</button>
+            <div class="cert-header">Курстан өткені туралы сертификат</div>
+            <div class="cert-title-main">IT LEARNING PLATFORM</div>
+            <div class="cert-subtitle">Осымен расталады:</div>
+            <div class="cert-name" id="cert-student-name">Азамат Серікұлы</div>
+            <div class="cert-text">
+                курс бағдарламасы бойынша оқуды сәтті аяқтады
+                <strong id="cert-course-title" style="color:#1e3a8a;display:block;margin-top:10px;font-size:1.25rem;">[Курс атауы]</strong>
+                және барлық практикалық сабақтар мен тесттерді өтуде тамаша нәтижелер көрсетті.
+            </div>
+            <div class="cert-signature-row">
+                <div class="cert-sig-box">
+                    <div class="cert-sig-val">Ермеков А.П.</div>
+                    <div class="cert-sig-line"></div>
+                    <div class="cert-sig-title">IT мұғалімі</div>
+                </div>
+                <div class="cert-sig-box">
+                    <div class="cert-sig-val">ITPlatform</div>
+                    <div class="cert-sig-line"></div>
+                    <div class="cert-sig-title">Платформа мөрі</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script src="assignments.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        renderResultsPage();
+        window.addEventListener('authStateChanged', renderResultsPage);
+    });
+
+    function renderResultsPage() {
+        renderLeaderboard();
+        renderCertificates();
+        renderAssignmentResults();
+        renderSummaryCards();
+    }
+
+    /* ── Summary cards ─────────────────────────────────────── */
+    function renderSummaryCards() {
+        const lessons = AppState.getLessons();
+        let done = 0, totalScore = 0, scoredCount = 0, totalAttempts = 0;
+
+        lessons.forEach(l => {
+            const r = ResultTracker.get(l.id);
+            if (r) {
+                totalAttempts += r.attempts || 0;
+                if (r.status === 'done') done++;
+                if (typeof r.score === 'number') { totalScore += r.score; scoredCount++; }
+            }
+        });
+
+        document.getElementById('sum-done').textContent =
+            `${done} / ${lessons.length}`;
+        document.getElementById('sum-avg').textContent =
+            scoredCount > 0 ? `${Math.round(totalScore / scoredCount)}%` : '—';
+        document.getElementById('sum-attempts').textContent =
+            totalAttempts > 0 ? totalAttempts : '—';
+
+        // Leaderboard rank
+        const lb  = AppState.getLeaderboard();
+        const idx = lb.findIndex(s => s.isCurrentUser);
+        document.getElementById('sum-rank').textContent =
+            idx >= 0 ? `#${idx + 1} / ${lb.length}` : '—';
+    }
+
+    /* ── Leaderboard ───────────────────────────────────────── */
+    function renderLeaderboard() {
+        const tbody = document.getElementById('leaderboard-tbody');
+        const data  = AppState.getLeaderboard();
+
+        tbody.innerHTML = data.map((s, i) => {
+            const rank = i + 1;
+            const rankBadge =
+                rank === 1 ? `<span class="rank-badge rank-1">🥇</span>` :
+                rank === 2 ? `<span class="rank-badge rank-2">🥈</span>` :
+                rank === 3 ? `<span class="rank-badge rank-3">🥉</span>` :
+                             `<span class="rank-badge">${rank}</span>`;
+
+            return `
+            <tr ${s.isCurrentUser ? 'class="current-user"' : ''}>
+                <td>${rankBadge}</td>
+                <td>
+                    <div class="leaderboard-user">
+                        <div class="user-avatar"
+                             style="background:${s.isCurrentUser ? 'var(--color-primary)' : 'var(--border-color)'};
+                                    color:${s.isCurrentUser ? '#fff' : 'var(--text-primary)'}">
+                            ${s.avatar}
+                        </div>
+                        <span>${s.name}${s.isCurrentUser ? ' <em style="font-size:.78rem;opacity:.7">(Сіз)</em>' : ''}</span>
+                    </div>
+                </td>
+                <td>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <div class="c-progress-bar-bg" style="width:70px;margin-bottom:0;">
+                            <div class="c-progress-bar-fill c-progress-fill-python"
+                                 style="width:${s.progress}%"></div>
+                        </div>
+                        <span>${s.progress}%</span>
+                    </div>
+                </td>
+                <td><strong>${s.score}</strong></td>
+            </tr>`;
+        }).join('');
+    }
+
+    /* ── Certificates ──────────────────────────────────────── */
+    function renderCertificates() {
+        const container = document.getElementById('certificates-container');
+        const user      = AppState.getCurrentUser();
+
+        if (!user.isLoggedIn) {
+            container.innerHTML = `
+                <div style="text-align:center;padding:30px;background:var(--bg-tertiary);border-radius:var(--radius-md);">
+                    <p style="font-size:.9rem;color:var(--text-secondary);margin-bottom:15px;">
+                        Сертификаттарыңызға қол жеткізу үшін жүйеге кіріңіз.
+                    </p>
+                    <button class="btn btn-secondary btn-sm" onclick="openAuthModal()">Кіру</button>
+                </div>`;
+            return;
+        }
+
+        const courses = AppState.getCourses();
+        let count = 0, html = '';
+
+        courses.forEach(course => {
+            const pct  = AppState.getCourseCompletionRate(course.id);
+            const done = pct === 100;
+
+            const lessons   = AppState.getLessons().filter(l => l.courseId === course.id);
+            const avgScore  = calcAvgScore(lessons);
+
+            html += `
+            <div class="certificate-card-item" style="${done ? '' : 'opacity:.55;'}">
+                <div class="cert-meta">
+                    <span class="cert-title">${course.icon} ${course.title}</span>
+                    <span class="cert-date">
+                        ${done
+                            ? `Орташа ұпай: ${avgScore}% · Беруге дайын`
+                            : `Прогресс: ${Math.round(pct)}% · Аяқталмаған`}
+                    </span>
+                </div>
+                ${done
+                    ? `<button class="btn btn-accent btn-sm"
+                               onclick="viewCertificate('${course.title}', '${avgScore}')">
+                           Ашу
+                       </button>`
+                    : `<span style="font-size:.8rem;color:var(--text-muted);">
+                           ${Math.round(pct)}% / 100%
+                       </span>`}
+            </div>`;
+            if (done) count++;
+        });
+
+        if (count === 0) {
+            container.innerHTML = `
+                <div style="text-align:center;padding:40px 15px;border:1px dashed var(--border-color);border-radius:var(--radius-md);">
+                    <div style="font-size:2rem;margin-bottom:10px;">🎓</div>
+                    <h4 style="margin-bottom:5px;">Дайын сертификаттар жоқ</h4>
+                    <p style="font-size:.85rem;color:var(--text-muted);line-height:1.4;">
+                        Сертификат алу үшін кез келген курстың барлық 5 кезеңінен өтіп, тапсырмаларды орындаңыз.
+                    </p>
+                    <a href="lessons.html" class="btn btn-secondary btn-sm" style="margin-top:15px;">
+                        Сабақтарға өту
+                    </a>
+                </div>`;
+        } else {
+            container.innerHTML = html;
+        }
+    }
+
+    /* ── Assignment results table ──────────────────────────── */
+    function renderAssignmentResults() {
+        const container = document.getElementById('assignment-results-container');
+        const courses   = AppState.getCourses();
+        const lessons   = AppState.getLessons();
+
+        let html = '';
+
+        courses.forEach(course => {
+            const courseLessons = lessons
+                .filter(l => l.courseId === course.id)
+                .sort((a, b) => a.stage - b.stage);
+
+            const rows = courseLessons.map(lesson => {
+                const r = ResultTracker.get(lesson.id);
+
+                if (!r) {
+                    return `
+                    <tr>
+                        <td>${lesson.stage}</td>
+                        <td style="max-width:220px;">${lesson.title}</td>
+                        <td>
+                            <div class="stage-score-bar">
+                                <div class="c-progress-bar-bg" style="width:80px;margin-bottom:0;">
+                                    <div class="stage-score-fill score-fill-empty" style="width:4px;"></div>
+                                </div>
+                                <span style="color:var(--text-muted);">—</span>
+                            </div>
+                        </td>
+                        <td><span class="status-pill pending">⏳ Басталмаған</span></td>
+                        <td class="errors-cell">—</td>
+                        <td><a href="lessons.html?lesson=${lesson.id}" class="goto-lesson-link">→ Бастау</a></td>
+                    </tr>`;
+                }
+
+                const fillClass =
+                    r.score >= 80 ? 'score-fill-good' :
+                    r.score >= 50 ? 'score-fill-partial' : 'score-fill-bad';
+
+                const errText = (r.errors && r.errors.length > 0)
+                    ? `<div class="err-item">${r.errors[0]}</div>
+                       ${r.errors.length > 1 ? `<div style="color:var(--text-muted);font-size:.72rem;">+тағы ${r.errors.length-1} қателер</div>` : ''}`
+                    : `<span style="color:var(--color-success);">Қателер жоқ</span>`;
+
+                return `
+                <tr>
+                    <td>${lesson.stage}</td>
+                    <td style="max-width:220px;">${lesson.title}</td>
+                    <td>
+                        <div class="stage-score-bar">
+                            <div class="c-progress-bar-bg" style="width:80px;margin-bottom:0;">
+                                <div class="stage-score-fill ${fillClass}" style="width:${r.score}%"></div>
+                            </div>
+                            <strong>${r.score}%</strong>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="status-pill ${r.status}">
+                            ${r.status === 'done' ? '✅ Орындалды' : '❌ Орындалмады'}
+                        </span>
+                        <div style="font-size:.72rem;color:var(--text-muted);margin-top:3px;">
+                            ${r.date} · Әрекеттер: ${r.attempts}
+                        </div>
+                    </td>
+                    <td class="errors-cell">${errText}</td>
+                    <td>
+                        <a href="lessons.html?lesson=${lesson.id}&tab=quiz" class="goto-lesson-link">
+                            ${r.status === 'done' ? '↺ Қайталау' : '→ Жалғастыру'}
+                        </a>
+                    </td>
+                </tr>`;
+            }).join('');
+
+            const avgScore  = calcAvgScore(courseLessons);
+            const doneCnt   = courseLessons.filter(l => {
+                const r = ResultTracker.get(l.id);
+                return r && r.status === 'done';
+            }).length;
+
+            html += `
+            <div class="course-result-block">
+                <div class="course-result-title">
+                    <span class="course-result-icon">${course.icon}</span>
+                    <span>${course.title}</span>
+                    <span style="margin-left:auto;font-size:.82rem;font-weight:500;color:var(--text-muted);">
+                        Өтілді: ${doneCnt}/${courseLessons.length} кезең
+                        ${avgScore ? `· Орташа ұпай: ${avgScore}%` : ''}
+                    </span>
+                </div>
+                <div style="overflow-x:auto;">
+                    <table class="stage-results-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Кезең</th>
+                                <th>Ұпай</th>
+                                <th>Статус / Күні</th>
+                                <th>Қателер</th>
+                                <th>Әрекет</th>
+                            </tr>
+                        </thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                </div>
+            </div>`;
+        });
+
+        container.innerHTML = html || '<p style="text-align:center;color:var(--text-muted);padding:30px;">Әзірге деректер жоқ.</p>';
+    }
+
+    /* ── Helpers ───────────────────────────────────────────── */
+    function calcAvgScore(lessons) {
+        const scored = lessons
+            .map(l => ResultTracker.get(l.id))
+            .filter(r => r && typeof r.score === 'number');
+        if (!scored.length) return null;
+        return Math.round(scored.reduce((s, r) => s + r.score, 0) / scored.length);
+    }
+
+    function viewCertificate(courseTitle, avgScore) {
+        const user = AppState.getCurrentUser();
+        document.getElementById('cert-student-name').textContent = user.name || 'Оқушы';
+        document.getElementById('cert-course-title').textContent =
+            `${courseTitle}  (орташа ұпай: ${avgScore}%)`;
+        document.getElementById('cert-modal').classList.add('active');
+    }
+
+    function closeCertModal() {
+        document.getElementById('cert-modal').classList.remove('active');
+    }
+    </script>
+    <!-- BOTTOM NAV (mobile only) -->
+    <nav class="bottom-nav" id="bottom-nav">
+        <a href="index.html" class="bottom-nav-item" id="bnav-home">
+            <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span>Басты</span>
+        </a>
+        <a href="lessons.html" class="bottom-nav-item" id="bnav-lessons">
+            <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            <span>Сабақтар</span>
+        </a>
+        <a href="results.html" class="bottom-nav-item active" id="bnav-results">
+            <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            <span>Нәтижелер</span>
+        </a>
+        <a href="admin.html" class="bottom-nav-item" id="bnav-admin">
+            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <span>Мұғалім</span>
+        </a>
+        <button class="bottom-nav-login" id="bnav-login" onclick="openAuthModal()">
+            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span id="bnav-login-label">Кіру</span>
+        </button>
+    </nav>
+</body>
+</html>
+
+

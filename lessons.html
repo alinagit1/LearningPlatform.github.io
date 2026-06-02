@@ -1,0 +1,459 @@
+﻿<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сабақтар — IT Learning Platform</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="assignments.css">
+    <style>
+        body { height: 100vh; }
+
+        /* Course Select Bar */
+        .course-select-nav {
+            background-color: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 14px 5%;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: var(--navbar-height);
+            z-index: 100;
+            overflow-x: auto;
+        }
+
+        .course-tab-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 11px 22px;
+            border-radius: var(--radius-md);
+            font-family: var(--font-heading);
+            font-weight: 700;
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            white-space: nowrap;
+            color: var(--text-secondary);
+        }
+
+        .course-tab-btn:hover {
+            border-color: var(--color-primary);
+            background-color: var(--bg-tertiary);
+        }
+
+        .course-tab-btn.active {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            color: #ffffff;
+            border-color: transparent;
+            box-shadow: 0 4px 12px var(--color-accent-glow);
+        }
+
+        .lessons-main-layout {
+            display: flex;
+            height: calc(100vh - var(--navbar-height) - 74px);
+            overflow: hidden;
+        }
+
+        /* Sidebar progress card */
+        .sidebar-progress-card {
+            background-color: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            padding: 14px;
+            margin: 14px;
+            margin-bottom: 4px;
+            border: 1px solid var(--border-color);
+        }
+
+        .sidebar-progress-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        /* Tab bar inside lesson viewport */
+        .lesson-tab-bar {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 28px;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
+        .lesson-tab {
+            padding: 11px 22px;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            color: var(--text-secondary);
+            transition: all var(--transition-fast);
+            border-radius: 6px 6px 0 0;
+            font-size: 0.92rem;
+        }
+
+        .lesson-tab:hover { color: var(--text-primary); background: var(--bg-tertiary); }
+
+        .lesson-tab.active {
+            border-bottom-color: var(--color-primary);
+            color: var(--color-primary);
+            font-weight: 700;
+            background: transparent;
+        }
+
+        .tab-panel          { display: none; }
+        .tab-panel.active   { display: block; }
+
+        /* Stage status badge */
+        .stage-progress-badge {
+            font-size: 0.72rem;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-weight: 700;
+            background-color: var(--border-color);
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+
+        .syllabus-item-link.completed .stage-progress-badge {
+            background-color: rgba(16,185,129,0.15);
+            color: var(--color-success);
+        }
+
+        .syllabus-item-link.active .stage-progress-badge {
+            background-color: rgba(255,255,255,0.25);
+            color: inherit;
+        }
+
+        /* "Go to assignment" big button */
+        .btn-go-assignment {
+            margin-top: 35px;
+            width: 100%;
+            padding: 16px;
+            font-size: 1.05rem;
+            border: 2px solid var(--color-primary);
+            background-color: transparent;
+            color: var(--color-primary);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-weight: 700;
+            transition: all var(--transition-normal);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-go-assignment:hover {
+            background-color: var(--color-primary);
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(37,99,235,0.25);
+        }
+
+        /* Assignment container inside the quiz tab */
+        #assignment-container {
+            min-height: 400px;
+        }
+
+        @media (max-width: 768px) {
+            .course-select-nav { margin-top: var(--navbar-height); }
+            .lessons-main-layout { flex-direction: column; height: auto; overflow: visible; }
+            body { height: auto; overflow: visible; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVIGATION -->
+    <header class="navbar">
+        <div class="nav-brand">
+            <div class="brand-icon">IT</div>
+            <span>Learning Platform</span>
+        </div>
+
+        <button class="hamburger" id="hamburger" aria-label="Мәзір">
+            <span></span><span></span><span></span>
+        </button>
+
+        <ul class="nav-links" id="nav-links">
+            <li><a href="index.html">Басты бет</a></li>
+            <li><a href="lessons.html" class="active">Сабақтар</a></li>
+            <li><a href="dashboard.html" id="student-cabinet-btn" style="display:none;">Жеке кабинет</a></li>
+            <li><a href="results.html">Нәтижелер</a></li>
+            <li><a href="admin.html">Мұғалім панелі</a></li>
+        </ul>
+
+        <div class="nav-actions">
+            <button class="theme-toggle-btn" id="theme-toggle" title="Тақырыпты ауыстыру"></button>
+            <button class="btn btn-secondary btn-sm" id="login-nav-btn">Кіру</button>
+        </div>
+    </header>
+
+    <!-- COURSE SELECTOR TABS -->
+    <nav class="course-select-nav" id="course-tabs"></nav>
+
+    <!-- MAIN LAYOUT -->
+    <main class="lessons-main-layout">
+
+        <!-- LEFT SIDEBAR — stage list -->
+        <aside class="syllabus-sidebar">
+            <div class="sidebar-progress-card">
+                <div class="sidebar-progress-meta">
+                    <span>Курс прогресі</span>
+                    <span id="course-progress-percent">0%</span>
+                </div>
+                <div class="c-progress-bar-bg" style="margin-bottom:0;">
+                    <div class="c-progress-bar-fill c-progress-fill-python"
+                         id="course-progress-fill" style="width:0%"></div>
+                </div>
+            </div>
+
+            <div class="syllabus-header" style="padding-top:6px; padding-bottom:10px;">
+                <h4 style="font-size:1rem;">Оқу кезеңдері</h4>
+            </div>
+
+            <div class="syllabus-list" id="syllabus-list" style="padding-top:4px;"></div>
+        </aside>
+
+        <!-- RIGHT PANEL — theory + assignment -->
+        <section class="lesson-viewport" id="lesson-viewport">
+            <div class="lesson-content" id="lesson-card">
+                <div style="text-align:center; padding:60px 0;">
+                    <div style="font-size:3rem; margin-bottom:15px;">📚</div>
+                    <h2>Курс пен кезеңді таңдаңыз</h2>
+                    <p style="color:var(--text-muted); margin-top:8px;">
+                        Жоғарыдағы курстардың бірін басып, содан кейін оқу кезеңін таңдаңыз.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://bernardo-castilho.github.io/DragDropTouch/DragDropTouch.js"></script>
+    <script src="app.js"></script>
+    <script src="assignments.js"></script>
+    <script>
+    // ── State ──────────────────────────────────────────────────
+    let activeCourseId  = null;
+    let activeLessonId  = null;
+    let activeTab       = 'theory'; // 'theory' | 'quiz'
+
+    // ── Boot ───────────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', () => {
+        initCourseTabs();
+
+        const params = new URLSearchParams(window.location.search);
+        const courseParam = params.get('course');
+        const lessonParam = params.get('lesson');
+
+        const courses = AppState.getCourses();
+        let initialCourse = courses[0].id;
+
+        if (courseParam && courses.some(c => c.id === courseParam)) {
+            initialCourse = courseParam;
+        } else if (lessonParam) {
+            const lMatch = AppState.getLessons().find(l => l.id === lessonParam);
+            if (lMatch) initialCourse = lMatch.courseId;
+        }
+
+        switchCourse(initialCourse);
+
+        if (lessonParam) {
+            selectStage(lessonParam, 'theory');
+        }
+    });
+
+    // ── Course Tabs ────────────────────────────────────────────
+    function initCourseTabs() {
+        const tabs = document.getElementById('course-tabs');
+        tabs.innerHTML = AppState.getCourses().map(c => `
+            <button class="course-tab-btn" id="tab-${c.id}"
+                    onclick="switchCourse('${c.id}')">
+                <span>${c.icon}</span><span>${c.title}</span>
+            </button>`).join('');
+    }
+
+    function switchCourse(courseId) {
+        activeCourseId = courseId;
+
+        document.querySelectorAll('.course-tab-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.id === `tab-${courseId}`);
+        });
+
+        renderSyllabus();
+
+        const first = AppState.getLessons()
+            .filter(l => l.courseId === courseId)
+            .sort((a, b) => a.stage - b.stage)[0];
+        if (first) selectStage(first.id, 'theory');
+    }
+
+    // ── Sidebar ────────────────────────────────────────────────
+    function renderSyllabus() {
+        const list     = document.getElementById('syllabus-list');
+        const lessons  = AppState.getLessons()
+            .filter(l => l.courseId === activeCourseId)
+            .sort((a, b) => a.stage - b.stage);
+        const progress = AppState.getStudentProgress();
+
+        // Check assignment results too
+        list.innerHTML = lessons.map(lesson => {
+            const done    = progress.completedLessons.includes(lesson.id);
+            const isActive = lesson.id === activeLessonId;
+            const badge   = done ? '100%' : '0%';
+            return `
+                <div class="syllabus-item-link
+                            ${isActive ? 'active' : ''}
+                            ${done     ? 'completed' : ''}"
+                     onclick="selectStage('${lesson.id}', 'theory')">
+                    <div class="syllabus-item-left">
+                        <span class="syllabus-status-dot"></span>
+                        <span class="syllabus-item-title">${lesson.title}</span>
+                    </div>
+                    <span class="stage-progress-badge">${badge}</span>
+                </div>`;
+        }).join('');
+
+        // Progress bar
+        const pct = Math.round(AppState.getCourseCompletionRate(activeCourseId));
+        document.getElementById('course-progress-percent').textContent = `${pct}%`;
+        const fill = document.getElementById('course-progress-fill');
+        fill.style.width = `${pct}%`;
+        fill.className = 'c-progress-bar-fill ' +
+            (activeCourseId === 'python' ? 'c-progress-fill-python' :
+             activeCourseId === 'cisco'  ? 'c-progress-fill-cisco'  :
+                                           'c-progress-fill-arvr');
+    }
+
+    // ── Stage Loader ───────────────────────────────────────────
+    function selectStage(lessonId, tab = 'theory') {
+        activeLessonId = lessonId;
+        activeTab      = tab;
+        renderSyllabus();
+
+        const lesson   = AppState.getLessons().find(l => l.id === lessonId);
+        if (!lesson) return;
+
+        const course   = AppState.getCourses().find(c => c.id === lesson.courseId);
+        const done     = AppState.getStudentProgress().completedLessons.includes(lessonId);
+        const result   = typeof ResultTracker !== 'undefined' ? ResultTracker.get(lessonId) : null;
+
+        // Build result snippet for theory tab
+        let resultSnippet = '';
+        if (result) {
+            const pillClass = result.status === 'done' ? 'done' : 'failed';
+            resultSnippet = `
+                <div class="stage-result-tracker" style="margin-top:25px;">
+                    <span class="tracker-label">Соңғы нәтиже:</span>
+                    <span class="tracker-pill ${pillClass}">
+                        ${result.status === 'done' ? '✓' : '✗'} ${result.score}%
+                    </span>
+                    <span class="tracker-pill" style="background:var(--bg-tertiary);color:var(--text-muted);">
+                        ${result.date}
+                    </span>
+                    <span class="tracker-pill" style="background:var(--bg-tertiary);color:var(--text-muted);">
+                        Әрекеттер: ${result.attempts}
+                    </span>
+                </div>`;
+        }
+
+        document.getElementById('lesson-card').innerHTML = `
+            <!-- Tab Bar -->
+            <div class="lesson-tab-bar">
+                <div class="lesson-tab ${tab === 'theory' ? 'active' : ''}"
+                     id="tab-theory-link"
+                     onclick="switchViewTab('theory')">📖 Теориялық сабақ</div>
+                <div class="lesson-tab ${tab === 'quiz' ? 'active' : ''}"
+                     id="tab-quiz-link"
+                     onclick="switchViewTab('quiz')">
+                    🎯 Интерактивті тапсырма
+                    ${done ? '<span style="color:var(--color-success); font-size:0.75rem; margin-left:6px;">✓ Өтілді</span>' : ''}
+                </div>
+            </div>
+
+            <!-- THEORY TAB -->
+            <div class="tab-panel ${tab === 'theory' ? 'active' : ''}" id="panel-theory">
+                <div class="lesson-header-meta">
+                    <span class="lesson-tag">${course?.title || ''}</span>
+                    <span class="lesson-tag" style="background:var(--color-accent-glow);color:var(--color-accent);">
+                        Кезең ${lesson.stage}
+                    </span>
+                    <span class="lesson-read-time">⏱ ${lesson.readTime}</span>
+                </div>
+
+                <h1 style="font-size:2.1rem; margin:18px 0 8px;">${lesson.title}</h1>
+
+                <div class="lesson-body">
+                    ${lesson.content}
+                </div>
+
+                ${resultSnippet}
+
+                <button class="btn-go-assignment" onclick="switchViewTab('quiz')">
+                    🎯 Интерактивті тапсырмаға өту →
+                </button>
+            </div>
+
+            <!-- ASSIGNMENT TAB -->
+            <div class="tab-panel ${tab === 'quiz' ? 'active' : ''}" id="panel-quiz">
+                <div id="assignment-container"></div>
+            </div>`;
+
+        // Render the assignment widget if we start on that tab
+        if (tab === 'quiz') {
+            renderAssignment(lessonId, document.getElementById('assignment-container'));
+        }
+
+        document.getElementById('lesson-viewport').scrollTop = 0;
+    }
+
+    // ── Tab switcher ───────────────────────────────────────────
+    function switchViewTab(tabName) {
+        activeTab = tabName;
+
+        document.getElementById('tab-theory-link')?.classList.toggle('active', tabName === 'theory');
+        document.getElementById('tab-quiz-link')?.classList.toggle('active',   tabName === 'quiz');
+        document.getElementById('panel-theory')?.classList.toggle('active',    tabName === 'theory');
+        document.getElementById('panel-quiz')?.classList.toggle('active',      tabName === 'quiz');
+
+        // Lazy-render assignment only when first switching to it
+        if (tabName === 'quiz') {
+            const container = document.getElementById('assignment-container');
+            // Only render if container is empty (avoids re-render on repeat clicks)
+            if (container && container.children.length === 0) {
+                renderAssignment(activeLessonId, container);
+            }
+        }
+
+        document.getElementById('lesson-viewport').scrollTop = 0;
+    }
+    </script>
+    <!-- BOTTOM NAV (mobile only) -->
+    <nav class="bottom-nav" id="bottom-nav">
+        <a href="index.html" class="bottom-nav-item" id="bnav-home">
+            <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span>Басты</span>
+        </a>
+        <a href="lessons.html" class="bottom-nav-item active" id="bnav-lessons">
+            <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            <span>Сабақтар</span>
+        </a>
+        <a href="results.html" class="bottom-nav-item" id="bnav-results">
+            <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            <span>Нәтижелер</span>
+        </a>
+        <a href="admin.html" class="bottom-nav-item" id="bnav-admin">
+            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <span>Мұғалім</span>
+        </a>
+        <button class="bottom-nav-login" id="bnav-login" onclick="openAuthModal()">
+            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span id="bnav-login-label">Кіру</span>
+        </button>
+    </nav>
+</body>
+</html>
+

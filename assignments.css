@@ -1,0 +1,921 @@
+/* ============================================================
+   ASSIGNMENTS — Interactive Exercise Styles
+   IT Learning Platform
+   ============================================================ */
+
+/* === SHARED ASSIGNMENT SHELL === */
+.assignment-shell {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    height: 100%;
+}
+
+.assignment-header {
+    padding: 20px 30px;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+    color: #fff;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.assignment-header h3 {
+    color: #fff;
+    font-size: 1.15rem;
+    margin: 0;
+}
+
+.assignment-header p {
+    font-size: 0.85rem;
+    opacity: 0.85;
+    margin: 0;
+}
+
+.assignment-badge {
+    background: rgba(255,255,255,0.2);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+.assignment-body {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-top: none;
+    border-radius: 0 0 var(--radius-md) var(--radius-md);
+    padding: 30px;
+    flex-grow: 1;
+}
+
+/* Feedback Panel — shown below after submission */
+.assignment-feedback {
+    margin-top: 20px;
+    border-radius: var(--radius-md);
+    padding: 20px 24px;
+    display: none;
+    border: 1px solid var(--border-color);
+}
+
+.assignment-feedback.visible {
+    display: block;
+}
+
+.assignment-feedback.success {
+    background: rgba(16, 185, 129, 0.08);
+    border-color: var(--color-success);
+}
+
+.assignment-feedback.error {
+    background: rgba(239, 68, 68, 0.07);
+    border-color: var(--color-danger);
+}
+
+.assignment-feedback.partial {
+    background: rgba(245, 158, 11, 0.08);
+    border-color: var(--color-warning);
+}
+
+.feedback-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.feedback-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.feedback-list li {
+    font-size: 0.9rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.feedback-list li::before {
+    content: '→';
+    color: var(--color-accent);
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+/* Result Stats Bar */
+.result-stats {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid var(--border-color);
+}
+
+.result-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.result-stat-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+}
+
+.result-stat-val {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+/* ================================================================
+   CISCO DRAG-AND-DROP TOPOLOGY BUILDER
+   ================================================================ */
+
+.cisco-workspace {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 20px;
+    min-height: 420px;
+}
+
+.cisco-palette {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.cisco-palette-title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    margin-bottom: 5px;
+}
+
+.cisco-device {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: grab;
+    transition: all var(--transition-fast);
+    user-select: none;
+    font-size: 0.88rem;
+    font-weight: 600;
+}
+
+.cisco-device:hover {
+    border-color: var(--color-accent);
+    background: var(--color-accent-glow);
+    transform: scale(1.02);
+}
+
+.cisco-device:active {
+    cursor: grabbing;
+    opacity: 0.7;
+}
+
+.cisco-device.dragging {
+    opacity: 0.4;
+    border-style: dashed;
+}
+
+.device-emoji {
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
+.cisco-canvas {
+    background: var(--bg-primary);
+    border: 2px dashed var(--border-color);
+    border-radius: var(--radius-md);
+    position: relative;
+    min-height: 400px;
+    overflow: hidden;
+    transition: border-color var(--transition-fast);
+}
+
+.cisco-canvas.drag-over {
+    border-color: var(--color-primary);
+    background: var(--color-accent-glow);
+}
+
+/* Network node placed on canvas */
+.net-node {
+    position: absolute;
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    cursor: move;
+    min-width: 80px;
+    text-align: center;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    z-index: 10;
+    user-select: none;
+}
+
+.net-node:hover {
+    border-color: var(--color-primary);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+    z-index: 20;
+}
+
+.net-node.selected {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px var(--color-accent-glow);
+}
+
+.net-node.correct {
+    border-color: var(--color-success);
+    background: rgba(16, 185, 129, 0.08);
+}
+
+.net-node.incorrect {
+    border-color: var(--color-danger);
+    background: rgba(239, 68, 68, 0.08);
+    animation: shake 0.4s ease;
+}
+
+.net-node-icon {
+    font-size: 2rem;
+    line-height: 1;
+}
+
+.net-node-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+}
+
+.net-node .delete-btn {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 20px;
+    height: 20px;
+    background: var(--color-danger);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    font-size: 0.7rem;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.net-node:hover .delete-btn {
+    display: flex;
+}
+
+/* SVG Lines for connections */
+.canvas-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 5;
+}
+
+.connection-line {
+    stroke: var(--color-accent);
+    stroke-width: 2;
+    stroke-dasharray: 6 3;
+    animation: dash-flow 1s linear infinite;
+}
+
+.connection-line.correct {
+    stroke: var(--color-success);
+    stroke-dasharray: none;
+    animation: none;
+}
+
+.connection-line.incorrect {
+    stroke: var(--color-danger);
+    stroke-dasharray: none;
+    animation: none;
+}
+
+@keyframes dash-flow {
+    to { stroke-dashoffset: -9; }
+}
+
+/* Cable mode toolbar */
+.cisco-toolbar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.tool-btn {
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.tool-btn:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.tool-btn.active {
+    background: var(--color-primary);
+    color: #fff;
+    border-color: transparent;
+}
+
+.cisco-hint-panel {
+    margin-top: 15px;
+    background: var(--color-accent-glow);
+    border: 1px solid rgba(14, 165, 233, 0.3);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    display: none;
+}
+
+.cisco-hint-panel.visible {
+    display: block;
+}
+
+/* ================================================================
+   PYTHON CODE EDITOR
+   ================================================================ */
+
+.python-editor-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    min-height: 400px;
+}
+
+.editor-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.editor-panel-header {
+    background: #1e293b;
+    color: #94a3b8;
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 8px 15px;
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.editor-panel-header .lang-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #3b82f6;
+    display: inline-block;
+    margin-right: 6px;
+}
+
+.code-editor-area {
+    background: #0f172a;
+    color: #f1f5f9;
+    font-family: 'Cascadia Code', 'Fira Code', 'Courier New', monospace;
+    font-size: 0.9rem;
+    line-height: 1.7;
+    padding: 15px;
+    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+    border: 1px solid #1e293b;
+    border-top: none;
+    resize: none;
+    flex-grow: 1;
+    min-height: 200px;
+    outline: none;
+    transition: border-color var(--transition-fast);
+    tab-size: 4;
+    white-space: pre;
+    overflow-x: auto;
+}
+
+.code-editor-area:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.output-panel {
+    background: #0b0f19;
+    color: #a3e635;
+    font-family: 'Cascadia Code', 'Fira Code', 'Courier New', monospace;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    padding: 15px;
+    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+    border: 1px solid #1e293b;
+    border-top: none;
+    flex-grow: 1;
+    min-height: 200px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+}
+
+.output-panel.has-error {
+    color: #f87171;
+}
+
+.editor-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+}
+
+.run-btn {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: #fff;
+    border: none;
+    padding: 10px 22px;
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all var(--transition-fast);
+}
+
+.run-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.hint-btn {
+    background: transparent;
+    color: var(--color-warning);
+    border: 1px solid var(--color-warning);
+    padding: 10px 18px;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.hint-btn:hover {
+    background: rgba(245, 158, 11, 0.1);
+}
+
+.reset-btn {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border-color);
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.reset-btn:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+/* Task description box */
+.python-task-box {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--color-primary);
+    border-radius: var(--radius-sm);
+    padding: 16px 20px;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+}
+
+.python-task-title {
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+}
+
+.python-task-desc {
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+/* Hint popup */
+.hint-popup {
+    background: rgba(245, 158, 11, 0.08);
+    border: 1px solid var(--color-warning);
+    border-radius: var(--radius-sm);
+    padding: 14px 18px;
+    margin-top: 10px;
+    font-size: 0.88rem;
+    color: var(--text-primary);
+    display: none;
+}
+
+.hint-popup.visible {
+    display: block;
+}
+
+.hint-popup strong {
+    color: var(--color-warning);
+}
+
+/* ================================================================
+   AR/VR QUIZ CARDS
+   ================================================================ */
+
+.arvr-quiz-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Flip card */
+.flip-card-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.flip-card {
+    height: 150px;
+    perspective: 1000px;
+    cursor: pointer;
+}
+
+.flip-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.flip-card.flipped .flip-card-inner {
+    transform: rotateY(180deg);
+}
+
+.flip-card-front,
+.flip-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: var(--radius-md);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    text-align: center;
+    border: 1px solid var(--border-color);
+}
+
+.flip-card-front {
+    background: var(--bg-secondary);
+}
+
+.flip-card-front .card-icon {
+    font-size: 2.5rem;
+    margin-bottom: 8px;
+    line-height: 1;
+}
+
+.flip-card-front .card-label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.flip-card-front .card-hint {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-top: 5px;
+}
+
+.flip-card-back {
+    background: linear-gradient(135deg, #1e3a8a, #1e40af);
+    color: #fff;
+    transform: rotateY(180deg);
+    font-size: 0.82rem;
+    line-height: 1.5;
+    border-color: transparent;
+}
+
+.flip-card-back .back-title {
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    color: #bfdbfe;
+}
+
+/* Multi-choice questions for AR/VR */
+.arvr-question-block {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 22px;
+}
+
+.arvr-question-num {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+.arvr-question-text {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    line-height: 1.5;
+}
+
+.arvr-options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.arvr-option {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 12px 15px;
+    cursor: pointer;
+    font-size: 0.88rem;
+    font-weight: 500;
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.arvr-option:hover {
+    border-color: var(--color-primary);
+    background: var(--color-accent-glow);
+}
+
+.arvr-option.selected {
+    border-color: var(--color-primary);
+    background: rgba(37, 99, 235, 0.1);
+    font-weight: 600;
+}
+
+.arvr-option.correct {
+    border-color: var(--color-success);
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--color-success);
+    font-weight: 700;
+}
+
+.arvr-option.wrong {
+    border-color: var(--color-danger);
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--color-danger);
+}
+
+.option-letter {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--bg-tertiary);
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.arvr-option.correct .option-letter {
+    background: var(--color-success);
+    color: #fff;
+}
+
+.arvr-option.wrong .option-letter {
+    background: var(--color-danger);
+    color: #fff;
+}
+
+/* Matching pairs exercise */
+.matching-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    align-items: start;
+}
+
+.matching-col-title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.matching-item {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    user-select: none;
+}
+
+.matching-item.selectable:hover {
+    border-color: var(--color-primary);
+    background: var(--color-accent-glow);
+}
+
+.matching-item.selected-left {
+    border-color: var(--color-primary);
+    background: rgba(37, 99, 235, 0.1);
+}
+
+.matching-item.selected-right {
+    border-color: var(--color-accent);
+    background: rgba(14, 165, 233, 0.1);
+}
+
+/* ================================================================
+   MOBILE RESPONSIVENESS FOR ASSIGNMENTS
+   ================================================================ */
+@media (max-width: 768px) {
+    .cisco-workspace {
+        grid-template-columns: 1fr;
+    }
+    .cisco-palette {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .cisco-device {
+        font-size: 0.8rem;
+        padding: 8px 10px;
+    }
+    .python-editor-layout {
+        grid-template-columns: 1fr;
+    }
+    .matching-grid {
+        grid-template-columns: 1fr;
+    }
+    .arvr-options-grid {
+        grid-template-columns: 1fr;
+    }
+    .assignment-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .cisco-canvas {
+        min-height: 300px;
+    }
+}
+
+.matching-item.matched-correct {
+    border-color: var(--color-success);
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--color-success);
+}
+
+.matching-item.matched-wrong {
+    border-color: var(--color-danger);
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--color-danger);
+    animation: shake 0.3s ease;
+}
+
+/* ================================================================
+   ANIMATIONS
+   ================================================================ */
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%       { transform: translateX(-8px); }
+    40%       { transform: translateX(8px); }
+    60%       { transform: translateX(-5px); }
+    80%       { transform: translateX(5px); }
+}
+
+@keyframes pop-in {
+    0%   { transform: scale(0.85); opacity: 0; }
+    100% { transform: scale(1);    opacity: 1; }
+}
+
+.pop-in { animation: pop-in 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+
+/* Progress tracker badge at bottom of assignment */
+.stage-result-tracker {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 14px 20px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.tracker-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.tracker-pill {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.tracker-pill.done    { background: rgba(16,185,129,0.15); color: var(--color-success); }
+.tracker-pill.pending { background: rgba(245,158,11,0.15); color: var(--color-warning); }
+.tracker-pill.failed  { background: rgba(239,68,68,0.15);  color: var(--color-danger); }
+
+/* Responsive fixes */
+@media (max-width: 768px) {
+    .python-editor-layout {
+        grid-template-columns: 1fr;
+    }
+    .arvr-options-grid {
+        grid-template-columns: 1fr;
+    }
+    .cisco-workspace {
+        grid-template-columns: 1fr;
+    }
+    .cisco-palette {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    .flip-card-container {
+        grid-template-columns: 1fr 1fr;
+    }
+    .matching-grid {
+        grid-template-columns: 1fr;
+    }
+}

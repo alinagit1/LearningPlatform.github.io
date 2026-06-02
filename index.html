@@ -1,0 +1,279 @@
+﻿<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT Learning Platform — Білім беру IT Платформасы</title>
+    <meta name="description" content="Python, желілер, Cisco Packet Tracer, AR/VR және желілік жабдықтарды үйренуге арналған инновациялық онлайн-платформа. Оқуды дәл қазір бастаңыз!">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- НАВИГАЦИЯ -->
+    <header class="navbar">
+        <div class="nav-brand">
+            <div class="brand-icon">IT</div>
+            <span>Learning Platform</span>
+        </div>
+        
+        <button class="hamburger" id="hamburger" aria-label="Открыть меню">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <ul class="nav-links" id="nav-links">
+            <li><a href="index.html" class="active">Басты бет</a></li>
+            <li><a href="lessons.html">Сабақтар</a></li>
+            <li><a href="dashboard.html" id="student-cabinet-btn" style="display: none;">Жеке кабинет</a></li>
+            <li><a href="results.html">Нәтижелер</a></li>
+            <li><a href="admin.html">Мұғалім панелі</a></li>
+        </ul>
+
+        <div class="nav-actions">
+            <button class="theme-toggle-btn" id="theme-toggle" title="Тақырыпты ауыстыру">
+                <!-- SVG dynamically loaded by app.js -->
+            </button>
+            <button class="btn btn-secondary btn-sm" id="login-nav-btn">Кіру</button>
+        </div>
+    </header>
+
+    <!-- HERO БЛОК -->
+    <section class="hero animate-fade-in-up">
+        <div class="hero-container">
+            <div class="hero-content">
+                <span class="hero-badge">Инновациялық білім</span>
+                <h1 class="hero-title">Қазіргі IT технологиялар әлеміне сіздің жолыңыз</h1>
+                <p class="hero-description">
+                    Сұранысқа ие бағыттарды меңгеріңіз: Python бағдарламалау, Cisco Packet Tracer-де желілерді жобалау, виртуалды шындық жасау және желілік жабдықтарды басқару.
+                </p>
+                <div class="hero-cta">
+                    <a href="lessons.html" class="btn btn-primary">Оқуды бастау</a>
+                    <button class="btn btn-secondary" onclick="openAuthModal()">Кабинетке кіру</button>
+                </div>
+            </div>
+            
+            <div class="hero-visual">
+                <div class="hero-glow-sphere"></div>
+                <div class="hero-image-wrapper">
+                    <!-- Crisp inline SVG as a beautiful technical diagram -->
+                    <svg viewBox="0 0 500 400" width="100%" height="auto" style="border-radius: var(--radius-md); background: #0f172a;" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Tech Grid Background -->
+                        <defs>
+                            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="1"/>
+                            </pattern>
+                            <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#3b82f6" />
+                                <stop offset="100%" stop-color="#0ea5e9" />
+                            </linearGradient>
+                        </defs>
+                        <rect width="100%" height="100%" fill="#0b0f19" />
+                        <rect width="100%" height="100%" fill="url(#grid)" />
+                        
+                        <!-- Glowing Network Nodes -->
+                        <path d="M 100 200 L 250 100 L 400 200 L 250 300 Z" fill="none" stroke="url(#blueGrad)" stroke-width="2" stroke-dasharray="5 5" />
+                        <line x1="250" y1="100" x2="250" y2="300" stroke="#1e293b" stroke-width="1" />
+                        <line x1="100" y1="200" x2="400" y2="200" stroke="#1e293b" stroke-width="1" />
+                        
+                        <!-- Connecting glowing circles -->
+                        <circle cx="250" cy="100" r="30" fill="#1e3a8a" stroke="#3b82f6" stroke-width="2" />
+                        <text x="250" y="105" font-family="'Montserrat', sans-serif" font-size="12" fill="#fff" text-anchor="middle" font-weight="bold">AR/VR</text>
+                        
+                        <circle cx="100" cy="200" r="30" fill="#1e3a8a" stroke="#0ea5e9" stroke-width="2" />
+                        <text x="100" y="205" font-family="'Montserrat', sans-serif" font-size="11" fill="#fff" text-anchor="middle" font-weight="bold">PYTHON</text>
+                        
+                        <circle cx="400" cy="200" r="30" fill="#1e3a8a" stroke="#0ea5e9" stroke-width="2" />
+                        <text x="400" y="205" font-family="'Montserrat', sans-serif" font-size="11" fill="#fff" text-anchor="middle" font-weight="bold">CISCO</text>
+                        
+                        <circle cx="250" cy="300" r="30" fill="#1e3a8a" stroke="#a855f7" stroke-width="2" />
+                        <text x="250" y="305" font-family="'Montserrat', sans-serif" font-size="11" fill="#fff" text-anchor="middle" font-weight="bold">NETS</text>
+
+                        <!-- Central Server Icon Representation -->
+                        <rect x="220" y="180" width="60" height="40" rx="5" fill="#0f172a" stroke="#3b82f6" stroke-width="2" />
+                        <circle cx="235" cy="190" r="3" fill="#10b981" />
+                        <circle cx="235" cy="200" r="3" fill="#10b981" />
+                        <line x1="245" y1="190" x2="270" y2="190" stroke="#e2e8f0" stroke-width="2" />
+                        <line x1="245" y1="200" x2="270" y2="200" stroke="#e2e8f0" stroke-width="2" />
+                        <text x="250" y="235" font-family="sans-serif" font-size="10" fill="#94a3b8" text-anchor="middle">Server L3</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- СТАТИСТИКА -->
+    <section class="stats-bar">
+        <div class="stats-container">
+            <div class="stat-item">
+                <span class="stat-number">4+</span>
+                <span class="stat-label">Бағыттар</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">13+</span>
+                <span class="stat-label">Интерактивті сабақтар</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">2000+</span>
+                <span class="stat-label">Студенттер</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">98%</span>
+                <span class="stat-label">Сәтті тапсырулар</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ОПИСАНИЕ И КАРТОЧКИ НАПРАВЛЕНИЙ -->
+    <section class="section" id="courses">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-subtitle">Оқу тректері</span>
+                <h2 class="section-title">Оқу үшін бағытты таңдаңыз</h2>
+            </div>
+            
+            <div class="categories-grid">
+                <!-- Python Card -->
+                <div class="category-card">
+                    <div>
+                        <div class="category-icon">🐍</div>
+                        <h3 class="category-title">Python әзірлеу</h3>
+                        <p class="category-description">Синтаксисті, функцияларды, циклдерді және деректер құрылымын үйреніңіз. Интерактивті тесттерді шешіп, алғашқы жұмыс кодыңызда тікелей платформада жазыңыз.</p>
+                    </div>
+                    <div class="category-footer">
+                        <span class="category-lessons-count">5 кезең</span>
+                        <a href="lessons.html?course=python" class="category-link">
+                            Бастау 
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Cisco Packet Tracer Card -->
+                <div class="category-card">
+                    <div>
+                        <div class="category-icon">🌐</div>
+                        <h3 class="category-title">Cisco Packet Tracer</h3>
+                        <p class="category-description">Виртуалды желілерді модельдеу құралын меңгеріңіз. Интерфейсті түсініп, порттарды баптаңыз және ДК мен коммутаторларды қосуды үйреніңіз.</p>
+                    </div>
+                    <div class="category-footer">
+                        <span class="category-lessons-count">5 кезең</span>
+                        <a href="lessons.html?course=cisco" class="category-link">
+                            Бастау 
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- AR/VR Card -->
+                <div class="category-card">
+                    <div>
+                        <div class="category-icon">🕶️</div>
+                        <h3 class="category-title">AR/VR технологиялары</h3>
+                        <p class="category-description">Виртуалды және толықтырылған шындық жасауға еніңіз. Unity және Unreal Engine салыстырып, интерактивті көрініс жасаңыз.</p>
+                    </div>
+                    <div class="category-footer">
+                        <span class="category-lessons-count">5 кезең</span>
+                        <a href="lessons.html?course=arvr" class="category-link">
+                            Бастау 
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- БЛОК ПРЕИМУЩЕСТВ -->
+    <section class="section" style="background-color: var(--bg-tertiary);" id="advantages">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-subtitle">Неліктен біз?</span>
+                <h2 class="section-title">Біздің платформада оқудың артықшылықтары</h2>
+            </div>
+            
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">🖥️</div>
+                    <h4 class="benefit-title">Интерактивті формат</h4>
+                    <p class="benefit-desc">Код, жабдық схемалары және көрнекі мысалдар сабақ ішінде.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">🎯</div>
+                    <h4 class="benefit-title">Білімді тексеру</h4>
+                    <p class="benefit-desc">Әр сабақтың соңындағы тесттер материалды тәжірибеде бекітуге көмектеседі.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">🏆</div>
+                    <h4 class="benefit-title">Рекордтар кестесі</h4>
+                    <p class="benefit-desc">Сыныптастармен жарысып, ұпай жинаңыз және рейтингті қадағалаңыз.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">📜</div>
+                    <h4 class="benefit-title">Сертификаттау</h4>
+                    <p class="benefit-desc">Курстарды сәтті аяқтаған кезде ресми цифрлық сертификат алыңыз.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ФУТЕР -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-info">
+                <div class="footer-logo">
+                    <div class="brand-icon">IT</div>
+                    <span>Learning Platform</span>
+                </div>
+                <p class="footer-desc">Қызылорда қаласы, Болашақ университеті Сол жағалау 15 деп өзгертіп берші главный беттегі адресті</p>
+            </div>
+            <div class="footer-links-col">
+                <h4 class="footer-links-title">Ресурстар</h4>
+                <ul class="footer-links">
+                    <li><a href="lessons.html">Барлық сабақтар</a></li>
+                    <li><a href="results.html">Нәтижелер кестесі</a></li>
+                    <li><a href="admin.html">Мұғалімдер панелі</a></li>
+                </ul>
+            </div>
+            <div class="footer-links-col">
+                <h4 class="footer-links-title">Байланыс</h4>
+                <ul class="footer-links">
+                    <li>Email: lukbekovaalina@mail.ru</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 IT Learning Platform. Барлық құқықтар қорғалған.</p>
+            <p>Дизайн: Ресми, таза, бейімделгіш</p>
+        </div>
+    </footer>
+
+    <!-- BOTTOM NAV (mobile only) -->
+    <nav class="bottom-nav" id="bottom-nav">
+        <a href="index.html" class="bottom-nav-item active" id="bnav-home">
+            <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span>Басты</span>
+        </a>
+        <a href="lessons.html" class="bottom-nav-item" id="bnav-lessons">
+            <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            <span>Сабақтар</span>
+        </a>
+        <a href="results.html" class="bottom-nav-item" id="bnav-results">
+            <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            <span>Нәтижелер</span>
+        </a>
+        <a href="admin.html" class="bottom-nav-item" id="bnav-admin">
+            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <span>Мұғалім</span>
+        </a>
+        <button class="bottom-nav-login" id="bnav-login" onclick="openAuthModal()">
+            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span id="bnav-login-label">Кіру</span>
+        </button>
+    </nav>
+
+    <!-- Scripts -->
+    <script src="app.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,464 @@
+﻿<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оқушының жеке кабинеті — IT Learning Platform</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        @media (max-width: 768px) {
+            .dashboard-layout { padding-bottom: 80px; }
+            .dashboard-main { padding: 16px !important; }
+            .stats-grid { grid-template-columns: 1fr 1fr !important; gap: 12px !important; }
+            .mini-card { padding: 16px 12px; gap: 12px; }
+            .mini-card-num { font-size: 1.3rem; }
+            .mini-card-icon { width: 40px; height: 40px; font-size: 1.2rem; }
+            .dashboard-grid-main { grid-template-columns: 1fr !important; gap: 15px !important; }
+            .panel-title { font-size: 1rem; flex-wrap: wrap; gap: 8px; }
+            .progress-section, .achievements-card, .calendar-card { padding: 18px; }
+            .badges-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+            .badge-icon { font-size: 1.6rem; }
+            .badge-name { font-size: 0.72rem; }
+            .schedule-item { padding: 10px; gap: 10px; }
+            .dashboard-header { flex-direction: column; gap: 12px; align-items: flex-start; }
+            .dashboard-header .btn { width: 100%; justify-content: center; }
+            .user-welcome h2 { font-size: 1.4rem; }
+            .sidebar { display: none; } /* hidden on mobile — use bottom nav */
+        }
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: 1fr 1fr !important; }
+            .badges-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- НАВИГАЦИЯ -->
+    <header class="navbar">
+        <div class="nav-brand">
+            <div class="brand-icon">IT</div>
+            <span>Learning Platform</span>
+        </div>
+        
+        <button class="hamburger" id="hamburger" aria-label="Мәзір">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <ul class="nav-links" id="nav-links">
+            <li><a href="index.html">Басты бет</a></li>
+            <li><a href="lessons.html">Сабақтар</a></li>
+            <li><a href="dashboard.html" class="active">Жеке кабинет</a></li>
+            <li><a href="results.html">Нәтижелер</a></li>
+            <li><a href="admin.html">Мұғалім панелі</a></li>
+        </ul>
+
+        <div class="nav-actions">
+            <button class="theme-toggle-btn" id="theme-toggle" title="Тақырыпты ауыстыру">
+                <!-- SVG dynamically loaded by app.js -->
+            </button>
+            <button class="btn btn-secondary btn-sm" id="login-nav-btn">Кіру</button>
+        </div>
+    </header>
+
+    <!-- DASHBOARD LAYOUT -->
+    <div class="dashboard-layout">
+        <!-- Боковое меню -->
+        <aside class="sidebar">
+            <ul class="sidebar-menu">
+                <li><a href="dashboard.html" class="sidebar-link active"><span class="sidebar-icon">📊</span> Бақылау тақтасы</a></li>
+                <li><a href="lessons.html" class="sidebar-link"><span class="sidebar-icon">📚</span> Менің оқуым</a></li>
+                <li><a href="results.html" class="sidebar-link"><span class="sidebar-icon">🏆</span> Бағалар мен рейтингтер</a></li>
+            </ul>
+            <div style="margin-top:auto; padding:15px; background:var(--bg-tertiary); border-radius:var(--radius-md); font-size:0.85rem;">
+                <strong>Оқушы режимі:</strong><br>
+                Азамат Серікұлы
+            </div>
+        </aside>
+
+        <!-- Основной контент панели -->
+        <main class="dashboard-main" id="dashboard-content">
+            <!-- Loading or login prompts will be injected here if not logged in -->
+            <div class="dashboard-header animate-fade-in-up">
+                <div class="user-welcome">
+                    <h2 id="welcome-title">Жүктелуде...</h2>
+                    <p>Сізді қайта көргенімізге қуаныштымыз. Төменде сіздің оқу статистикаңыз берілген.</p>
+                </div>
+                <button class="btn btn-primary" id="btn-continue-learning" onclick="window.location.href='lessons.html'">Оқуды жалғастыру</button>
+            </div>
+
+            <!-- Сетка мини-статистики -->
+            <div class="stats-grid animate-fade-in-up">
+                <div class="mini-card">
+                    <div class="mini-card-icon" style="background-color: rgba(37, 99, 235, 0.1); color: var(--color-primary);">📈</div>
+                    <div class="mini-card-info">
+                        <span class="mini-card-num" id="stat-total-progress">0%</span>
+                        <span class="mini-card-label">Жалпы прогресс</span>
+                    </div>
+                </div>
+                <div class="mini-card">
+                    <div class="mini-card-icon" style="background-color: rgba(16, 185, 129, 0.1); color: var(--color-success);">⭐</div>
+                    <div class="mini-card-info">
+                        <span class="mini-card-num" id="stat-total-points">0</span>
+                        <span class="mini-card-label">Жиналған ұпайлар</span>
+                    </div>
+                </div>
+                <div class="mini-card">
+                    <div class="mini-card-icon" style="background-color: rgba(245, 158, 11, 0.1); color: var(--color-warning);">📖</div>
+                    <div class="mini-card-info">
+                        <span class="mini-card-num" id="stat-completed-lessons">0/0</span>
+                        <span class="mini-card-label">Өтілген сабақтар</span>
+                    </div>
+                </div>
+                <div class="mini-card">
+                    <div class="mini-card-icon" style="background-color: rgba(168, 85, 247, 0.1); color: #a855f7;">🏅</div>
+                    <div class="mini-card-info">
+                        <span class="mini-card-num" id="stat-unlocked-badges">0/3</span>
+                        <span class="mini-card-label">Марапаттар</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Главный блок с прогрессом и событиями -->
+            <div class="dashboard-grid-main animate-fade-in-up">
+                <!-- Прогресс курсов -->
+                <div class="progress-section">
+                    <h3 class="panel-title">Менің оқу курстарым</h3>
+                    <div class="course-progress-list">
+                        <!-- Python -->
+                        <div class="course-progress-item">
+                            <div class="c-progress-meta">
+                                <span class="c-progress-title">Python Әзірлеу</span>
+                                <span id="progress-percent-python">0%</span>
+                            </div>
+                            <div class="c-progress-bar-bg">
+                                <div class="c-progress-bar-fill c-progress-fill-python" id="progress-bar-python" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <!-- Cisco -->
+                        <div class="course-progress-item">
+                            <div class="c-progress-meta">
+                                <span class="c-progress-title">Cisco Packet Tracer</span>
+                                <span id="progress-percent-cisco">0%</span>
+                            </div>
+                            <div class="c-progress-bar-bg">
+                                <div class="c-progress-bar-fill c-progress-fill-cisco" id="progress-bar-cisco" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <!-- AR/VR -->
+                        <div class="course-progress-item">
+                            <div class="c-progress-meta">
+                                <span class="c-progress-title">Технологии AR/VR</span>
+                                <span id="progress-percent-arvr">0%</span>
+                            </div>
+                            <div class="c-progress-bar-bg">
+                                <div class="c-progress-bar-fill c-progress-fill-arvr" id="progress-bar-arvr" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Награды и ачивки -->
+                <div class="achievements-card">
+                    <h3 class="panel-title">Жетістіктер мен белгілер</h3>
+                    <div class="badges-grid">
+                        <div class="badge-item" id="badge-python">
+                            <div class="badge-icon">🐍</div>
+                            <div class="badge-name">Python Ниндзя</div>
+                            <div class="badge-desc">Базалық Python меңгерілді</div>
+                        </div>
+                        <div class="badge-item" id="badge-cisco">
+                            <div class="badge-icon">🌐</div>
+                            <div class="badge-name">Маршрутизатор</div>
+                            <div class="badge-desc">Cisco курсы аяқталды</div>
+                        </div>
+                        <div class="badge-item" id="badge-arvr">
+                            <div class="badge-icon">🕶️</div>
+                            <div class="badge-name">VR Архитекторы</div>
+                            <div class="badge-desc">AR/VR көріністері игерілді</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Дополнительная секция: Выполненные задания и Ошибки/Рекомендации -->
+            <div class="dashboard-grid-main animate-fade-in-up" style="margin-top: 30px;">
+                <!-- Выполненные задания -->
+                <div class="completed-lessons-card">
+                    <h3 class="panel-title">Орындалған тапсырмалар</h3>
+                    <div class="lesson-history-list" id="dashboard-completed-lessons">
+                        <!-- Loaded dynamically -->
+                    </div>
+                </div>
+
+                <!-- Ошибки и рекомендации -->
+                <div class="errors-recs-card" style="background-color: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 25px; box-shadow: var(--card-shadow);">
+                    <h3 class="panel-title">Қателер мен Ұсыныстар</h3>
+                    <div id="dashboard-errors-recs" style="font-size: 0.95rem; color: var(--text-secondary);">
+                        <!-- Loaded dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Дополнительная секция: Расписание и Обратная связь -->
+            <div class="dashboard-grid-main animate-fade-in-up" style="margin-top: 30px;">
+                <!-- Блок календаря -->
+                <div class="calendar-card">
+                    <h3 class="panel-title">Алдағы оқиғалар</h3>
+                    <div class="schedule-list">
+                        <div class="schedule-item" style="border-left-color: var(--color-primary);">
+                            <div class="schedule-date-box">
+                                <span class="schedule-day">26</span>
+                                <span class="schedule-month">мамыр</span>
+                            </div>
+                            <div class="schedule-info">
+                                <span class="schedule-title">Python бойынша практикалық сынақ</span>
+                                <span class="schedule-time">⏰ 15:00 - Онлайн тест</span>
+                            </div>
+                        </div>
+                        <div class="schedule-item" style="border-left-color: var(--color-success);">
+                            <div class="schedule-date-box">
+                                <span class="schedule-day">28</span>
+                                <span class="schedule-month">мамыр</span>
+                            </div>
+                            <div class="schedule-info">
+                                <span class="schedule-title">Семинар: LAN топологиясын жобалау</span>
+                                <span class="schedule-time">⏰ 16:30 - Cisco Packet Tracer</span>
+                            </div>
+                        </div>
+                        <div class="schedule-item" style="border-left-color: #a855f7;">
+                            <div class="schedule-date-box">
+                                <span class="schedule-day">02</span>
+                                <span class="schedule-month">маусым</span>
+                            </div>
+                            <div class="schedule-info">
+                                <span class="schedule-title">AR/VR жобалары бойынша кеңес</span>
+                                <span class="schedule-time">⏰ 14:00 - Жеке қоңырау</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Связь с преподавателем -->
+                <div class="feedback-card" style="background-color: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 30px; box-shadow: var(--card-shadow);">
+                    <h3 class="panel-title">Мұғалімге жазу</h3>
+                    <form onsubmit="sendFeedbackToTeacher(event)">
+                        <div class="form-group" style="margin-bottom: 12px;">
+                            <label class="form-label" style="font-size: 0.8rem;">Атыңыз</label>
+                            <input class="form-input" type="text" id="feedback-sender" value="Азамат Серікұлы" readonly>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <label class="form-label" style="font-size: 0.8rem;">Сабақ бойынша хабарлама / сұрақ</label>
+                            <textarea class="form-input" id="feedback-message" rows="3" placeholder="Cisco, Python немесе Unity бойынша сұрақ қойыңыз..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-sm" style="width: 100%;">Хабарлама жіберу</button>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- BOTTOM NAV (mobile only) -->
+    <nav class="bottom-nav" id="bottom-nav">
+        <a href="index.html" class="bottom-nav-item" id="bnav-home">
+            <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span>Басты</span>
+        </a>
+        <a href="lessons.html" class="bottom-nav-item" id="bnav-lessons">
+            <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            <span>Сабақтар</span>
+        </a>
+        <a href="results.html" class="bottom-nav-item" id="bnav-results">
+            <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            <span>Нәтижелер</span>
+        </a>
+        <a href="admin.html" class="bottom-nav-item" id="bnav-admin">
+            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <span>Мұғалім</span>
+        </a>
+        <button class="bottom-nav-login" id="bnav-login" onclick="openAuthModal()">
+            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span id="bnav-login-label">Кіру</span>
+        </button>
+    </nav>
+
+    <!-- Scripts -->
+    <script src="app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            checkDashboardAccess();
+            // Listen for logins
+            window.addEventListener('authStateChanged', checkDashboardAccess);
+        });
+
+        function checkDashboardAccess() {
+            const user = AppState.getCurrentUser();
+            const dashboardMain = document.getElementById('dashboard-content');
+            
+            if (!user.isLoggedIn || user.role !== 'student') {
+                dashboardMain.innerHTML = `
+                    <div style="text-align: center; padding: 80px 20px; max-width: 600px; margin: 0 auto;" class="animate-fade-in-up">
+                        <div style="font-size: 4rem; margin-bottom: 20px;">🔒</div>
+                        <h2 style="font-size: 2rem; margin-bottom: 15px;">Жеке кабинет қорғалған</h2>
+                        <p style="color: var(--text-secondary); margin-bottom: 30px;">
+                            Оқу статистикасын, марапаттарыңызды көру және мұғаліммен байланысу үшін оқушы аккаунтымен кіру қажет.
+                        </p>
+                        <button class="btn btn-primary" onclick="openAuthModal()">Оқушы ретінде кіру</button>
+                    </div>
+                `;
+                return;
+            }
+            
+            // If logged in, update content
+            renderDashboardStats();
+        }
+
+        function renderDashboardStats() {
+            const user = AppState.getCurrentUser();
+            const progress = AppState.getStudentProgress(user.id);
+            const lessons = AppState.getLessons();
+            
+            // Set name
+            document.getElementById('welcome-title').innerText = `Сәлем, ${user.name}!`;
+            document.getElementById('feedback-sender').value = user.name;
+            
+            // Find next lesson to continue
+            const uncompleted = lessons.filter(l => !progress.completedLessons.includes(l.id));
+            const continueBtn = document.getElementById('btn-continue-learning');
+            if (uncompleted.length > 0) {
+                const nextLesson = uncompleted[0];
+                continueBtn.innerText = `Жалғастыру: ${nextLesson.title}`;
+                continueBtn.onclick = () => window.location.href = `lessons.html?lesson=${nextLesson.id}`;
+            } else {
+                continueBtn.innerText = 'Курс аяқталды! 🎉';
+                continueBtn.onclick = () => window.location.href = 'lessons.html';
+            }
+            
+            // Overall Stats
+            const totalProgress = Math.round(AppState.getOverallCompletionRate());
+            document.getElementById('stat-total-progress').innerText = `${totalProgress}%`;
+            document.getElementById('stat-total-points').innerText = progress.totalPoints;
+            document.getElementById('stat-completed-lessons').innerText = `${progress.completedLessons.length}/${lessons.length}`;
+            
+            // Course progress bars and cards
+            const pythonProgress = Math.round(AppState.getCourseCompletionRate('python'));
+            const ciscoProgress = Math.round(AppState.getCourseCompletionRate('cisco'));
+            const arvrProgress = Math.round(AppState.getCourseCompletionRate('arvr'));
+            
+            document.getElementById('progress-percent-python').innerText = `${pythonProgress}%`;
+            document.getElementById('progress-bar-python').style.width = `${pythonProgress}%`;
+            
+            document.getElementById('progress-percent-cisco').innerText = `${ciscoProgress}%`;
+            document.getElementById('progress-bar-cisco').style.width = `${ciscoProgress}%`;
+            
+            document.getElementById('progress-percent-arvr').innerText = `${arvrProgress}%`;
+            document.getElementById('progress-bar-arvr').style.width = `${arvrProgress}%`;
+            
+            // Unlock achievements based on completion rate (100% completed)
+            let unlockedCount = 0;
+            if (pythonProgress === 100) {
+                document.getElementById('badge-python').classList.add('unlocked');
+                unlockedCount++;
+            } else {
+                document.getElementById('badge-python').classList.remove('unlocked');
+            }
+            
+            if (ciscoProgress === 100) {
+                document.getElementById('badge-cisco').classList.add('unlocked');
+                unlockedCount++;
+            } else {
+                document.getElementById('badge-cisco').classList.remove('unlocked');
+            }
+            
+            if (arvrProgress === 100) {
+                document.getElementById('badge-arvr').classList.add('unlocked');
+                unlockedCount++;
+            } else {
+                document.getElementById('badge-arvr').classList.remove('unlocked');
+            }
+            
+            document.getElementById('stat-unlocked-badges').innerText = `${unlockedCount}/3`;
+            
+            // Render Completed Lessons
+            const completedContainer = document.getElementById('dashboard-completed-lessons');
+            if (progress.completedLessons.length === 0) {
+                completedContainer.innerHTML = '<div style="color:var(--text-muted); padding:10px 0;">Сізде әлі орындалған тапсырмалар жоқ.</div>';
+            } else {
+                let clHtml = '';
+                progress.completedLessons.forEach(lessonId => {
+                    const lDef = lessons.find(l => l.id === lessonId);
+                    const r = typeof ResultTracker !== 'undefined' ? ResultTracker.get(lessonId, user.id) : null;
+                    const scoreText = r ? `Ұпай: ${r.score}%` : 'Орындалды';
+                    clHtml += `
+                        <div style="padding: 12px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-weight: 500;">${lDef ? lDef.title : lessonId}</span>
+                            <span style="background: rgba(16,185,129,0.15); color: var(--color-success); padding: 4px 8px; border-radius: 12px; font-size: 0.8rem; font-weight: bold;">${scoreText}</span>
+                        </div>
+                    `;
+                });
+                completedContainer.innerHTML = clHtml;
+            }
+
+            // Render Errors and Recommendations
+            const recsContainer = document.getElementById('dashboard-errors-recs');
+            let allErrors = [];
+            let allRecs = [];
+            
+            if (typeof ResultTracker !== 'undefined') {
+                progress.completedLessons.forEach(lessonId => {
+                    const r = ResultTracker.get(lessonId, user.id);
+                    if (r && r.errors && r.errors.length > 0) {
+                        allErrors.push(...r.errors);
+                    }
+                });
+            }
+            
+            if (allErrors.length === 0 && progress.completedLessons.length > 0) {
+                recsContainer.innerHTML = '<div style="color:var(--color-success); padding:10px 0;">Керемет! Орындалған тапсырмаларда тіркелген қателер жоқ.</div>';
+            } else if (allErrors.length === 0) {
+                recsContainer.innerHTML = '<div style="color:var(--text-muted); padding:10px 0;">Әзірге қателер жоқ. Тапсырмаларды орындауды бастаңыз.</div>';
+            } else {
+                // Generate simple dynamic recommendations based on keywords in errors
+                const errStr = allErrors.join(' ').toLowerCase();
+                if (errStr.includes('print')) allRecs.push('<code>print()</code> функциясының синтаксисін қайталаңыз.');
+                if (errStr.includes('input')) allRecs.push('<code>input()</code> қолданылуына және типтерді түрлендіруге назар аударыңыз.');
+                if (errStr.includes('if') || errStr.includes('else')) allRecs.push('<code>if/elif/else</code> шартты операторларын қайталаңыз.');
+                if (errStr.includes('қосылым') || errStr.includes('коммутатор') || errStr.includes('байланыс')) allRecs.push('Желі топологиясы ережелерін қайталаңыз: соңғы құрылғылар коммутаторларға қосылады.');
+                
+                if (allRecs.length === 0) allRecs.push('Тапсырма нұсқауларын мұқият оқыңыз.');
+
+                // Deduplicate and take last 3 errors for brevity
+                const uniqueErrors = [...new Set(allErrors)].slice(-3);
+                
+                recsContainer.innerHTML = `
+                    <div style="margin-bottom: 15px;">
+                        <strong style="color: var(--color-warning);">Соңғы жіберілген қателер:</strong>
+                        <ul style="margin-top: 8px; padding-left: 20px;">
+                            ${uniqueErrors.map(e => `<li style="margin-bottom: 4px;">${e.replace(/<[^>]+>/g, '')}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <div>
+                        <strong style="color: var(--color-primary);">💡 Ұсыныстар:</strong>
+                        <ul style="margin-top: 8px; padding-left: 20px;">
+                            ${allRecs.map(r => `<li style="margin-bottom: 4px;">${r}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+        }
+
+        function sendFeedbackToTeacher(event) {
+            event.preventDefault();
+            const sender = document.getElementById('feedback-sender').value;
+            const message = document.getElementById('feedback-message').value;
+            
+            AppState.submitFeedback(sender, message);
+            document.getElementById('feedback-message').value = '';
+        }
+    </script>
+</body>
+</html>
+
+
+
